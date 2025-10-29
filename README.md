@@ -1,40 +1,40 @@
 # Section 5 – Refactoring Code Smells in Practice
 
-This activity is designed to help you practice identifying code smells and applying refactoring patterns to a real codebase in CMPM 121, Game Development Patterns.
 
-## Assignment Instructions
 
-For this assignment, your task is to **analyze and improve the code in `src/main.ts`**:
+File: src/main.ts
 
-1. **Identify code smells**: Review the code and look for patterns that may cause maintenance issues, reduce readability, or introduce potential bugs.
-2. **Refactor**: Apply **refactoring patterns** as described in Fowler’s _Refactoring_ book to improve the code.
-3. **Document your work**: Once you have completed your refactoring:
-   - Rewrite this README.md
-   - List the **code smells** you identified
-   - Describe the **refactoring patterns** you applied and how they improved the code
+## Summary
+Improved a counter program by removing code smells and organizing the logic. The new version is clear, short, and easy to maintain. It works the same but reads faster and is easier to extend.
 
-## Getting Started
+## Before Refactoring
+The original code mixed setup, logic, and updates in one long function. The same update logic appeared in three places. A global variable controlled the counter. Variable names used single letters. The background color and title updated in repeated blocks.
 
-With Codespaces (or another environment supporting devcontainers):
+## Main Problems
 
-1. Run `deno task dev` to start the development server
+Duplicated code made maintenance harder.
 
-Without Codespaces (local VS Code):
+One long function handled multiple jobs.
 
-1. Install the [Deno](https://docs.deno.com/runtime/getting_started/installation/) runtime.
-2. Install the Deno VS Code extension (must be done only after installing Deno runtime).
-3. Run `./setup-hooks.sh` to enable pre-commit quality checks
-4. Run `deno task dev` to start the development server
+Global state risked hidden bugs.
 
-The setup script configures Git hooks to automatically run formatting, linting, and type checking before commits.
+Poor naming reduced readability.
 
-## Deployment
+Hardcoded strings made changes slow.
 
-This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
+## Refactoring Patterns Used
 
-### Setup GitHub Pages Deployment
+Extract Function to move display updates into one clear method.
 
-1. Go to your repository's Settings → Pages
-2. Under "Source", select "GitHub Actions"
-3. The workflow will automatically deploy on pushes to the `main` branch
-4. Your site will be published at `https://<your-github-username>.github.io/<repository-name>/`
+Extract Class to group related logic and data inside CounterApp.
+
+Encapsulate Variable to hide the counter from global scope.
+
+Rename Variable to make purpose clear.
+
+Replace Conditional with one handler using button data attributes.
+
+Centralize DOM references to reduce repetition.
+
+## After Refactoring
+The new version uses one class to manage all behavior. All buttons share a single event handler. The counter is private and updates through one path. The structure supports new features like extra buttons without copying code.
