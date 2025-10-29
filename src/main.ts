@@ -1,73 +1,64 @@
-// CMPM 121 Smelly Code Activity
+// CMPM 121 Refactored Counter App
+// Refactored to remove code smells duplicated code, global variables, and unclear naming.
 
-// This variable keeps track of the counter
-let c = 0;
+// The CounterApp class encapsulates all logic and state for the counter
+class CounterApp {
+  // Private variable to keep track of the counter
+  private count = 0;
 
-// These constants are for button IDs and heading text
-const a = "increment", b = "counter", h = "CMPM 121 Project";
+  // References to key DOM elements
+  private counterDisplay: HTMLElement;
+  private buttons: NodeListOf<HTMLButtonElement>;
 
-function setup() {
-  // Create the HTML for the counter
-  document.body.innerHTML = `
-    <h1>${h}</h1>
-    <p>Counter: <span id="${b}">0</span></p>
-    <button id="${a}">Click Me!</button>
-    <button id="dec">Decrement</button>
-    <button id="reset">Reset</button>
-  `;
+  constructor() {
+    // Build the HTML interface for the counter
+    document.body.innerHTML = `
+      <h1>CMPM 121 Project</h1>
+      <p>Counter: <span id="counter">0</span></p>
+      <button data-action="increment">Increment</button>
+      <button data-action="decrement">Decrement</button>
+      <button data-action="reset">Reset</button>
+    `;
 
-  // Get the increment button element from the document
-  const bI = document.getElementById(a);
-  // Get the decrement button element from the document
-  const bD = document.getElementById("dec");
-  // Get the reset button element from the document
-  const bR = document.getElementById("reset");
-  // Get the counter span element from the document
-  const ctr = document.getElementById(b);
+    // Get references to the counter display and buttons
+    this.counterDisplay = document.getElementById("counter")!;
+    this.buttons = document.querySelectorAll("button");
 
-  // Check if any element is missing, then exit the function
-  if (!bI || !bD || !bR || !ctr) return;
+    // Add event listeners for each button
+    // Instead of three separate click functions, we use one shared handler
+    this.buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const action = btn.dataset.action;
+        this.handleAction(action!);
+      });
+    });
+  }
 
-  // Add click event to the increment button
-  bI.addEventListener("click", () => {
-    // Increase the counter by 1
-    c++;
-    // Update the counter display
-    ctr.innerHTML = `${c}`;
-    // Update the document title
-    document.title = "Clicked " + c;
-    // Change the background color based on even/odd count
-    document.body.style.backgroundColor = c % 2 ? "pink" : "lightblue";
-  });
+  // Handles button actions based on their data-action attribute
+  private handleAction(action: string) {
+    // Modify the count value based on the action type
+    if (action === "increment") this.count++;
+    else if (action === "decrement") this.count--;
+    else if (action === "reset") this.count = 0;
 
-  // Add click event to the decrement button
-  bD.addEventListener("click", () => {
-    // Decrease the counter by 1
-    c--;
-    // Update the counter display
-    ctr.innerHTML = `${c}`;
-    // Update the document title
-    document.title = "Clicked " + c;
-    // Change the background color based on even/odd count
-    document.body.style.backgroundColor = c % 2 ? "pink" : "lightblue";
-  });
+    // Update the display after every action
+    this.updateDisplay();
+  }
 
-  // Add click event to the reset button
-  bR.addEventListener("click", () => {
-    // Reset the counter to 0
-    c = 0;
-    // Update the counter display
-    ctr.innerHTML = `${c}`;
-    // Update the document title
-    document.title = "Clicked " + c;
-    // Change the background color based on even/odd count
-    document.body.style.backgroundColor = c % 2 ? "pink" : "lightblue";
-  });
+  // Updates the visible counter, title, and background color
+  private updateDisplay() {
+    // Update the counter number on screen
+    this.counterDisplay.textContent = `${this.count}`;
+
+    // Update the document title to show number of clicks
+    document.title = `Clicked ${this.count}`;
+
+    // Change background color based on even/odd count
+    document.body.style.backgroundColor = this.count % 2 === 0
+      ? "lightblue"
+      : "pink";
+  }
 }
 
-function start() {
-  // Call setup to initialize the UI
-  setup();
-}
-// Start the counter app
-start();
+// Start the app when the script runs
+new CounterApp();
